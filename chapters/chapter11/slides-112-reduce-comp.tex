@@ -38,13 +38,13 @@
  	\item Avoiding OOM issues
 	\item \textbf{Data parallelism:} split the data on different model replicas
 	\item \textbf{Tensor parallellism:} split model parameters accross GPUs
-	\item \textbf{Sharded optimizers:} reduce optimizer overhead by No. GPUs
-	\begin{itemize}
-	 	\item ZeRO (Zero Redundancy Optimizer)
-		\item Requires low extra communication between GPUs
-	 	\item Decreases optimizer memory requirement
-		\item Improves training speed
-\end{itemize}
+% 	\item \textbf{Sharded optimizers:} reduce optimizer overhead by No. GPUs
+% 	\begin{itemize}
+% 	 	\item ZeRO (Zero Redundancy Optimizer)
+% 		\item Requires low extra communication between GPUs
+% 	 	\item Decreases optimizer memory requirement
+% 		\item Improves training speed
+% \end{itemize}
 \end{itemize}
 
 \vfill
@@ -53,14 +53,14 @@
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Data Paralelism}
+\begin{vbframe}{Data Paralelism (Animated GIF!)}
 
 \vfill
 
 \begin{figure}
 	\centering
 	\includegraphics[width = 11cm]{./figure/data_parallel.png} \\ 
-	{\footnotesize Source: \href{https://docs.nvidia.com/deeplearning/nemo/user-guide/docs/en/stable/nlp/nemo_megatron/parallelisms.html}{Nvidia}}
+	{\footnotesize Source: \href{https://docs.nvidia.com/nemo-framework/user-guide/latest/nemotoolkit/features/parallelisms.html#distributed-data-parallelism}{Nvidia}}
 \end{figure}
 
 \vfill
@@ -69,14 +69,14 @@
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Tensor Paralelism}
+\begin{vbframe}{Tensor Paralelism (Animated GIF!)}
 
 \vfill
 
 \begin{figure}
 	\centering
 	\includegraphics[width = 11cm]{./figure/tensor_paralel.png} \\ 
-	{\footnotesize Source: \href{https://docs.nvidia.com/deeplearning/nemo/user-guide/docs/en/stable/nlp/nemo_megatron/parallelisms.html}{Nvidia}}
+	{\footnotesize Source: \href{https://docs.nvidia.com/nemo-framework/user-guide/latest/nemotoolkit/features/parallelisms.html#tensor-parallelism}{Nvidia}}
 \end{figure}
 
 \vfill
@@ -85,21 +85,21 @@
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Zero Redundancy Optimizer}
+% \begin{vbframe}{Zero Redundancy Optimizer}
 
-\vfill
+% \vfill
 
-\begin{figure}
-	\centering
-	\includegraphics[width = 11cm]{./figure/zero_paralel.png} \\ 
- \caption{Comparing the per-device memory consumption of model states, with three stages of ZeRO-DP optimizations.}
-  \citebutton{Rajbhandari et al., 2020}{https://arxiv.org/pdf/1910.02054.pdf}
+% \begin{figure}
+% 	\centering
+% 	\includegraphics[width = 11cm]{./figure/zero_paralel.png} \\ 
+%  \caption{Comparing the per-device memory consumption of model states, with three stages of ZeRO-DP optimizations.}
+%   \citebutton{Rajbhandari et al., 2020}{https://arxiv.org/pdf/1910.02054.pdf}
   
-\end{figure}
+% \end{figure}
 
-\vfill
+% \vfill
 
-\end{vbframe}
+% \end{vbframe}
 
 % ------------------------------------------------------------------------------
 

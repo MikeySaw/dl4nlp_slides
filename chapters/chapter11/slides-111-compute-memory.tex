@@ -50,22 +50,22 @@ $$C \approx \tau T = 6 P D$$
 
 \begin{vbframe}{Compute Requirements}
 
-\vfill
-
 \textbf{where:}
 
 \begin{itemize}
     \item $C$: No. of floating-point operations (FLOPs) to train the model:\\
           $C = C_{forward} + C_{backward}$
-	\item $C_{forward} \approx 2 P D$
-	\item $C_{backward} \approx 4 P D$
+	\item $C_{forward} \approx 2 P D$; $\quad C_{backward} \approx 4 P D$
+	\begin{itemize}
+	    \item $2PD$: \textbf{2} comes from the multiply-accumulate operation used in matrix multiplication
+        \item $4PD$: backward pass approximately twice the compute of the forward pass
+	\end{itemize}
+    \item In the backward pass at each layer, gradients have to be calculated for the weights at that layer and for the previous layers output, so that the gradient of the previous layers's weights can be calculated
 	\item $\tau$ is throughput of hardware: (No. GPUs) x (FLOPs/GPU)
 	\item $T$ is the time spent training the model, in seconds
 	\item $P$ is the number of parameters in the model
 	\item $D$ is the dataset size (in tokens)
 \end{itemize}
-
-\vfill
 
 \end{vbframe}
 
@@ -78,16 +78,16 @@ $$C \approx \tau T = 6 P D$$
 $C$  can be measured in different units:\newline
 
 \begin{itemize}
-     \item FLOPs-seconds which is [Floating Point Ops / Second]  x [Seconds]
+     \item FLOP-seconds which is [Floating Point Ops / Second] 
  	\begin{itemize}
  	    \item We also use multiples GFLOP-seconds, TFLOP-seconds etc.
  		\item Other multiples like PFLOP-days are used in papers
  		\item 1 PFLOP-day = $10^{15} \cdot 24 \cdot 3600$ FLOP-seconds
+            \item Actual FLOPs are always lower than the advertised theoretical FLOPs
  	\end{itemize}
- 	\item GPU-hours which is [No. GPUs] x [Hours]
+ 	\item GPU-hours
  	\begin{itemize}
  	    \item GPU model is also required, since they have different compute capacities
- 		\item For any GPU model, its Actual FLOPs are always lower than the advertised theoretical FLOPs
  	\end{itemize}
  \end{itemize}
 
@@ -103,13 +103,14 @@ $C$  can be measured in different units:\newline
 
 \begin{itemize}
     \item Model performance depends on number of parameters $P$, but also on number of training tokens $D$
-	\item We need to decide about $P$ and $D$, so that we get the best performance withing the compute budget
+	\item \textbf{We need to decide about $P$ and $D$, so that we get the best performance withing the compute budget.}
 	\item The optimal tradeoff between $P$ and $D$ is: $D = 20 P$
 	\begin{itemize}
 	    \item This is usually true for Chinchilla models \citebutton{Hoffmann et al., 2022}{https://arxiv.org/abs/2203.15556},\\but not for all LLMs
 	\end{itemize}
 	\item Training a LLM for less than 200 billion tokens is not recommended
-	\item For models used in production: First determine the acceptable maximum inference cost, and then train the biggest model within that budget.
+	\item Rule of thumb: First determine the upmost inference cost, and then train the biggest model within that boundary
+    \item Different ways to determine P: based on available data, compute budget or inference time 
 \end{itemize}
 
 \vfill
@@ -163,6 +164,30 @@ Model size components: \newline
 
 % ------------------------------------------------------------------------------
 
+\begin{vbframe}{FP32/FP16}
+
+TODO: explain these number representations here!!!
+    
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Int 8 Quantitization}
+
+TODO: explain these number representations here!!!
+    
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Int* Quantitization}
+
+TODO: explain these number representations here!!!
+    
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
 \begin{vbframe}{Model Parameters}
 
 \vfill
@@ -194,30 +219,30 @@ It is practically common to use mixed representations: \newline
 
 \vfill
 
-AdamW: $Mem_{\text{optimizer}} = 12 ~bytes/param \cdot N_{params}$
+AdamW: $Mem_{\text{AdamW}} = 8 ~bytes/param \cdot N_{params}$
 \begin{itemize}
- 	\item fp32 copy of parameters: 4 bytes/param
- 	\item Momentum: 4 bytes/param
+    % \item fp32 copy of parameters: 4 bytes/param
+    \item Momentum: 4 bytes/param
 	\item Variance: 4 bytes/param
 \end{itemize}
 
 \vskip3mm
 
-bitsandbytes (8-bit optimizer): $Mem_{\text{optimizer}} = 6 ~bytes/param \cdot N_{params}$
+bitsandbytes (8-bit optimizer): $Mem_{\text{optimizer}} = 2 ~bytes/param \cdot N_{params}$
 \begin{itemize}
- 	\item fp32 copy of parameters: 4 bytes/param
- 	\item Momentum: 1 byte/param
+    % \item fp32 copy of parameters: 4 bytes/param
+    \item Momentum: 1 byte/param
 	\item Variance: 1 byte/param
 \end{itemize}
 
 \vskip3mm
 
 
-SGD-like optimizers with momentum: $Mem_{\text{optimizer}}= 8 \text{ bytes} /(\text{param}\cdot N_{params}$), 
-\begin{itemize}
-	\item fp32 copy of parameters: 4 bytes/param
-	\item Momentum: 4 bytes/param
-\end{itemize}
+% SGD-like optimizers with momentum: $Mem_{\text{optimizer}}= 8 \text{ bytes} /(\text{param}\cdot N_{params}$), 
+% \begin{itemize}
+% 	\item fp32 copy of parameters: 4 bytes/param
+% 	\item Momentum: 4 bytes/param
+% \end{itemize}
 
 \vfill
 
@@ -258,17 +283,17 @@ Their memory overhead contribution is: \newline
 
 \vskip5mm
 
-Total memory when training \textbf{without} activations: \newline
-$Mem_{training} = Mem_{params} + Mem_{opt} + Mem_{grad}$
-
-\vskip5mm
-
 Total memory when training \textbf{using} activations: \newline
 $Mem_{training} = Mem_{params} + Mem_{opt} + Mem_{grad} + Mem_{activ}$
 
 \vskip5mm
 
-In the latter case, $Mem_{params}$, $Mem_{opt}$ and $Mem_{grad}$ are significantly smaller than in the former.
+Total memory when training \textbf{without} activations: \newline
+$Mem_{training} = Mem_{params} + Mem_{opt} + Mem_{grad}$
+
+\vskip5mm
+
+% In the latter case, $Mem_{params}$, $Mem_{opt}$ and $Mem_{grad}$ are significantly smaller than in the former.
 
 \vfill
 
