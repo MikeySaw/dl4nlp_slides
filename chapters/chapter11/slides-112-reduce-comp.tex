@@ -6,7 +6,7 @@
 \newcommand{\learninggoals}{
 \item Learn about different techniques to reduce compute and memory
 \item Learn about distributed training with data/tensor parallelism
-\item Learn about Flash Attention
+\item Learn about FlashAttention
 }
 \definecolor{texblue}{rgb}{0, 0, 1}
 \def\myblue#1{\textcolor{texblue}{#1}}
@@ -53,7 +53,7 @@
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Data Paralelism (Animated GIF!)}
+\begin{vbframe}{Data Parallelism (1) (Animated GIF!)}
 
 \vfill
 
@@ -69,13 +69,41 @@
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Tensor Paralelism (Animated GIF!)}
+\begin{vbframe}{Data Parallelism (2)}
+\begin{itemize}
+    \item \textbf{Data Splitting:}
+        \begin{itemize}
+            \item The dataset is divided into smaller chunks, and each chunk is assigned to a different processing unit (e.g., GPU or CPU) on different nodes
+            \item Each node processes a different subset of the data in parallel, reducing the overall training time    
+        \end{itemize}
+    \item \textbf{Model Replication:}
+        \begin{itemize}
+            \item Each processing unit has a replica of the neural network model
+            \item These replicas are trained independently on their respective data subsets
+        \end{itemize}
+    \item \textbf{Gradient Aggregation:}
+        \begin{itemize}
+            \item After each forward and backward pass, gradients are computed locally on each node 
+            \item The gradients are then averaged (or summed) across all nodes to ensure that each model   replica receives the same gradient update     
+        \end{itemize}
+    \item \textbf{Parameter Synchronization:}
+        \begin{itemize}
+            \item The model parameters (weights and biases) are updated synchronously across all nodes
+            \item This ensures that all model replicas remain consistent with each other after each update step    
+        \end{itemize}
+\end{itemize}
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Tensor Parallelism (1) (Animated GIF!)}
 
 \vfill
 
 \begin{figure}
 	\centering
-	\includegraphics[width = 11cm]{./figure/tensor_paralel.png} \\ 
+	\includegraphics[width = 11cm]{./figure/tensor_parallel.png} \\ 
 	{\footnotesize Source: \href{https://docs.nvidia.com/nemo-framework/user-guide/latest/nemotoolkit/features/parallelisms.html#tensor-parallelism}{Nvidia}}
 \end{figure}
 
@@ -84,6 +112,32 @@
 \end{vbframe}
 
 % ------------------------------------------------------------------------------
+
+\begin{vbframe}{Tensor Parallelism (2)}
+
+\begin{itemize}
+    \item \textbf{Model Partitioning:}
+    \begin{itemize}
+        \item The model's layers or tensors are split across multiple devices
+        \item Different parts of the model are assigned to different devices, enabling them to work on separate portions of the computations simultaneously
+    \end{itemize}
+    
+    \item \textbf{Forward and Backward Passes:}
+    \begin{itemize}
+        \item During the forward pass, each device processes its portion of the tensors with intermediate results passed between devices
+        \item In the backward pass, gradients are computed in the reverse order, again with necessary data transfers between devices
+    \end{itemize}    
+    \item \textbf{Parameter Updates:}
+    \begin{itemize}
+        \item Parameter updates can be performed independently on each device for the parameters they own
+        \item After each update step, the devices synchronize to ensure consistency across the distributed model
+    \end{itemize}
+\end{itemize}
+    
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
 
 % \begin{vbframe}{Zero Redundancy Optimizer}
 
@@ -193,6 +247,31 @@ Fast and Memory-Efficient Exact Attention with IO-Awareness \newline
 \vfill
 
 \end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+% \begin{vbframe}{Operation Fusion (2)}
+%     \begin{itemize}
+%     \item \textbf{Definition:}
+%     \begin{itemize}
+%         \item Operation Fusion refers to the technique of combining multiple operations into a single operation.
+%         \item This is done to reduce the computational overhead and improve performance.
+%     \end{itemize}
+    
+%     \item \textbf{Purpose:}
+%     \begin{itemize}
+%         \item The primary goal is to enhance the efficiency of the attention mechanism.
+%         \item By fusing operations, it reduces the number of memory accesses and computational steps.
+%     \end{itemize}
+    
+%     \item \textbf{Application in FlashAttention:}
+%     \begin{itemize}
+%         \item Flash Attention uses operation fusion to optimize the attention computation.
+%         \item Key steps in the attention mechanism are fused to streamline the process.
+%     \end{itemize}
+% \end{itemize}
+
+% \end{vbframe}
 
 % ------------------------------------------------------------------------------
 

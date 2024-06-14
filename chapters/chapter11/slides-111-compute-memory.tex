@@ -166,23 +166,63 @@ Model size components: \newline
 
 \begin{vbframe}{FP32/FP16}
 
-TODO: explain these number representations here!!!
+\begin{figure}
+	\centering
+	\includegraphics[width = 11cm]{./figure/float.png} \\ 
+	{\footnotesize Source: \href{https://mlabonne.github.io/blog/posts/Introduction_to_Weight_Quantization.html}{Maxime Labonne}}
+\end{figure}
+
+\hspace{}
+
+You can represent every float like this:
+
+$$(-1)^{\textcolor[RGB]{59,112,254}{S}}\cdot 2^{\textcolor[RGB]{49,195,135}{e}-bias} \cdot 1.\textcolor[RGB]{255,128,237}{m}$$
     
 \end{vbframe}
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Int 8 Quantitization}
+\begin{vbframe}{Int8 Quantitization (1)}
 
-TODO: explain these number representations here!!!
+\textit{Since fp32 takes up too much memory, you can make use of int8 quantitization to reduce the memory requirements}
+
+\vfill
+
+\begin{itemize}
+    \item Real\_number = stored\_integer * scaling\_factor
+    \item \textbf{Absmax quantitization}: 
+        \begin{itemize}
+            \item $X_{quant} = \text{round}\left(\frac{127}{max{|\mathbf{X}|}} \cdot \mathbf{X}\right)$ 
+        \end{itemize}
+    \item \textbf{Zero-point quantitization}: 
+        \begin{itemize}
+            \item $\text{scale} = \frac{255}{max(\mathbf{X}) - min(\mathbf{X})}$
+            \item $\text{zeropoint} = -round(\text{scale}\cdot min(\mathbf{X})) - 128$
+            \item $X_{quant} = round(\text{scale}\cdot \mathbf{X} + \text{zeropoint})$
+        \end{itemize}
+\end{itemize}
+
+\vfill
     
 \end{vbframe}
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Int* Quantitization}
+\begin{vbframe}{Int8 Quantitization (2)}
 
-TODO: explain these number representations here!!!
+\textit{We map a number from a fp32 to an int8 representation:}
+
+\vfill
+
+\begin{figure}
+	\centering
+	\includegraphics[width = 11cm]{./figure/intquant.png} \\ 
+	{\footnotesize Source: \href{https://mlabonne.github.io/blog/posts/Introduction_to_Weight_Quantization.html}{Maxime Labonne}}
+\end{figure}
+
+\vfill
+
+\textit{These quantitizations reduce the amount of memory used by the model, also they further speed up computation by enabling integer computation instead of floating-point math!} 
     
 \end{vbframe}
 
