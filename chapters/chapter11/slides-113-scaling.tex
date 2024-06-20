@@ -28,6 +28,21 @@
 
 % ------------------------------------------------------------------------------
 
+\begin{vbframe}{Number of Parameters: Notation}
+
+\vfill
+
+\begin{itemize}
+    \item Up to now in this chapter: number of parameters = $P$
+    \item From now on: number of parameters = $N$
+\end{itemize}
+
+\vfill
+    
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
 \begin{vbframe}{Scaling Laws}
 \href{https://arxiv.org/abs/2001.08361}{\beamergotobutton{Kaplan et al. (2020)}} 
 
@@ -94,6 +109,17 @@
 
 % ------------------------------------------------------------------------------
 
+\begin{vbframe}{Power Law (GPT3 Paper)}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=10cm]{figure/losscompute.png}
+\end{figure}
+    
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
 \begin{vbframe}{Scaling Laws}
 
 \vfill
@@ -107,8 +133,13 @@
 
 	\item Optimal batch size
 	\begin{itemize}
-	\item Ideal size is a power of the loss only
-	\item It is $\sim$1-2 million tokens for the largest models we can train
+    	\item “Optimal batch size: The ideal batch size for training these
+                models is roughly a power of the loss only, and continues to
+                be determinable by measuring the gradient noise scale
+                [MKAT18]; it is roughly 1-2 million tokens at convergence for
+                the largest models we can train.”
+    	\item gradient noise scale = a measure of the signal-to-noise ratio
+            of gradient across training examples
 	\end{itemize}
 
 \end{itemize}
@@ -116,6 +147,40 @@
 \vskip3mm
 
 \textbf{Larger language models will perform better and be more sample efficient than current models.} 
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Optimal Batch Size}
+
+\begin{figure}
+    \centering
+    \includegraphics{chapters/chapter11/figure/optimalbatchsize.png}
+\end{figure}
+
+\begin{itemize}
+    \item Estimate gradient as accurately as possible $\rightarrow$ large batch
+    \item Increase training speed as much as possible $\rightarrow$ large step size
+    \item Based on the estimated gradient, choose a step size such that the cost of the landing position does not deviate too much from the cost of the ideal landing position $\rightarrow$ small step size
+    \item Exploit stochasticity (epoch batches would not be a good thing even if we could compute them efficiently) $\rightarrow$ small step size
+
+\end{itemize}
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Scaling Law for next word prediction}
+
+\vfill
+
+\begin{itemize}
+    \item $L(N,D) = 1.61 + \frac{406.4}{N^{0.34}} + \frac{410.7}{D^{0.28}}$
+    \item $L(N,D)$ is cross entropy on new text
+\end{itemize}
 
 \vfill
 
@@ -139,7 +204,7 @@ Given a fixed FLOPs budget, how should we trade-off model size and text size to 
 	\item Trained on 5\,B to 400\,B tokens
 	\end{itemize}
 
-%	\item Different results from those of \citebutton{Kaplan et al., 2020}{https://arxiv.org/abs/2001.08361} 
+	\item Different results from those of \citebutton{Kaplan et al., 2020}{https://arxiv.org/abs/2001.08361} 
 	\item Results verified using Chinchilla
 	\begin{itemize}
 	\item Chinchilla has 70\,B parameters and is trained on 1.4\,T tokens
@@ -155,7 +220,7 @@ Given a fixed FLOPs budget, how should we trade-off model size and text size to 
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Compute-Optimal LLM\MakeLowercase{s}}
+\begin{vbframe}{Compute-Optimal LLM\MakeLowercase{s}: Are GPT3 etc too large?}
 
 \vfill
 
@@ -166,6 +231,28 @@ Given a fixed FLOPs budget, how should we trade-off model size and text size to 
 \end{figure}
 
 \vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Compute-Optimal LLM\MakeLowercase{s} (2)}
+
+Given a fixed FLOPs budget, how should one trade off model size and
+the number of training tokens? We find that all three methods predict
+that current large models should be substantially smaller and therefore
+trained much longer than is currently done. Based on our estimated
+compute-optimal frontier, we predict that for the compute budget used
+to train Gopher, an optimal model should be 4 times smaller, while
+being training on 4 times more tokens. We verify this by training a more
+compute-optimal 70B model, called Chinchilla, on 1.4 trillion tokens.
+Not only does Chinchilla outperform its much larger counterpart,
+Gopher, but its reduced model size reduces inference cost considerably
+and greatly facilitates downstream uses on smaller hardware. The
+energy cost of a large language model is amortized through its usage
+for inference and fine-tuning. The benefits of a more optimally trained
+smaller model, therefore, extend beyond the immediate benefits of its
+improved performance.
 
 \end{vbframe}
 
@@ -193,7 +280,7 @@ Given a fixed FLOPs budget, how should we trade-off model size and text size to 
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Chinchilla on MMLU}
+\begin{vbframe}{Chinchilla outperforms other LLM\MakeLowercase{s}: MMLU}
 
 \vfill
 
@@ -209,7 +296,7 @@ Given a fixed FLOPs budget, how should we trade-off model size and text size to 
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Chinchilla on QA}
+\begin{vbframe}{Chinchilla outperforms other LLM\MakeLowercase{s}: QA}
 
 \vfill
 
